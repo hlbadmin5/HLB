@@ -1,0 +1,35 @@
+[
+  {
+    "name": "Buffalo Trace",
+    "type": "Kentucky Straight Bourbon",
+    "proof": "90 Proof (45% ABV)",
+    "tags": ["Caramel", "Vanilla", "Toffee", "Oak"],
+    "nose": "Sweet vanilla, toasted caramel, and ripe dark fruit.",
+    "palate": "Rich toffee, sweet oak spice, candied fruit, and mint.",
+    "finish": "Long and smooth with lingering anise and warm oak.",
+    "pairingCigar": "Arturo Fuente Hemingway Short Story (Cameroon)",
+    "pairingNote": "The natural sweetness of the Cameroon wrapper harmonizes with the brown sugar and vanilla notes in Buffalo Trace."
+  },
+  {
+    "name": "Eagle Rare 10 Year",
+    "type": "Kentucky Straight Bourbon",
+    "proof": "90 Proof (45% ABV)",
+    "tags": ["Toasted Oak", "Leather", "Cocoa", "Orange Peel"],
+    "nose": "Complex aromas of toffee, candied almond, and rich oak.",
+    "palate": "Dry cocoa, candied citrus peel, honey, and subtle leather.",
+    "finish": "Prolonged and dry with toasted oak and gentle rye spice.",
+    "pairingCigar": "Padron 1964 Anniversary Series (Maduro)",
+    "pairingNote": "Bold chocolate and earthy cocoa notes match the deep barrel age of the 10-year oak profile."
+  },
+  {
+    "name": "Blanton's Single Barrel",
+    "type": "Single Barrel Bourbon",
+    "proof": "93 Proof (46.5% ABV)",
+    "tags": ["Citrus", "Nutmeg", "Caramel", "Cinnamon"],
+    "nose": "Nutmeg, warming baking spices, vanilla, and sweet citrus.",
+    "palate": "Creamy vanilla, caramel, and clove over balanced rye warmth.",
+    "finish": "Clean and crisp with honey and lingering spice.",
+    "pairingCigar": "Ashton Classic (Connecticut Shade)",
+    "pairingNote": "A creamy, smooth Connecticut wrapper elevates Blanton's refined citrus and spice without overpowering it."
+  }
+]

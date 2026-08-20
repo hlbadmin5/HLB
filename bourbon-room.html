@@ -7,7 +7,7 @@
   <meta name="description" content="Explore the dedicated Bourbon Room at Harmony's Liquor Box. Allocated whiskeys, single barrels, and premium cigars in Harmony, IN.">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bourbon-theme-body">
 
   <!-- Navigation / Header -->
   <header class="navbar">
@@ -29,7 +29,7 @@
   <!-- Page Header -->
   <section class="page-header bourbon-theme">
     <div class="container">
-      <span class="badge">Specialty Selection</span>
+      <span class="badge-amber">Specialty Selection</span>
       <h1>The Bourbon Room & Premium Cigars</h1>
       <p>Allocated spirits, rare barrel picks, and fine cigars curated for whiskey enthusiasts.</p>
     </div>
@@ -52,7 +52,6 @@
         </div>
 
         <div class="showcase-img-box">
-          <!-- Save your Buffalo Trace stock photo as buffalo-trace.jpg in your site directory -->
           <img src="buffalo-trace.jpg" alt="Buffalo Trace Kentucky Straight Bourbon Whiskey" class="bottle-showcase-img">
         </div>
       </div>
@@ -81,7 +80,17 @@
         </div>
       </div>
 
-      <!-- Allocated Drops Info Box with updated Facebook URL -->
+      <!-- Dynamic Tasting Notes & Cigar Pairings Section -->
+      <div class="mt-3">
+        <h2 class="tasting-section-title">Featured Pours & Cigar Pairings</h2>
+        <p style="color: #a89f91; font-size: 0.95rem;">Staff tasting profiles and recommended cigar pairings from our humidor.</p>
+        
+        <div id="tasting-card-grid" class="tasting-grid">
+          <!-- Dynamically loaded from bourbons.json -->
+        </div>
+      </div>
+
+      <!-- Allocated Drops Info Box -->
       <div class="card highlight-box mt-3">
         <div class="highlight-content">
           <h3>How to Catch Rare Drops & Allocations</h3>
@@ -101,6 +110,56 @@
       <p>&copy; 2026 Harmony's Liquor Box. All rights reserved. Please drink responsibly. Must be 21+.</p>
     </div>
   </footer>
+
+  <!-- Fetch & Render Script -->
+  <script>
+    async function loadBourbonData() {
+      const container = document.getElementById("tasting-card-grid");
+      if (!container) return;
+
+      try {
+        const response = await fetch("bourbons.json");
+        if (!response.ok) throw new Error("Could not load bourbons.json");
+        
+        const bottles = await response.json();
+
+        container.innerHTML = bottles.map(bottle => `
+          <div class="tasting-card">
+            <div>
+              <div class="tasting-card-header">
+                <div>
+                  <h3>${bottle.name}</h3>
+                  <span style="color: #a89f91; font-size: 0.8rem;">${bottle.type}</span>
+                </div>
+                <span class="proof-badge">${bottle.proof}</span>
+              </div>
+
+              <div class="flavor-pills">
+                ${bottle.tags.map(tag => `<span class="flavor-pill">${tag}</span>`).join('')}
+              </div>
+
+              <div class="notes-block">
+                <p><span class="notes-label">Nose:</span> ${bottle.nose}</p>
+                <p><span class="notes-label">Palate:</span> ${bottle.palate}</p>
+                <p><span class="notes-label">Finish:</span> ${bottle.finish}</p>
+              </div>
+            </div>
+
+            <div class="cigar-pairing-box">
+              <div class="cigar-pairing-title">🍂 Recommended Cigar Pairing</div>
+              <strong style="color: #fde68a;">${bottle.pairingCigar}</strong>
+              <p style="margin: 4px 0 0 0; color: #d1c7b7; font-size: 0.8rem; line-height: 1.4;">${bottle.pairingNote}</p>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `<p style="color: #ef4444;">Unable to load tasting notes right now.</p>`;
+      }
+    }
+
+    loadBourbonData();
+  </script>
 
 </body>
 </html>

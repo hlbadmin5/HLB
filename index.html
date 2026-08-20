@@ -6,6 +6,82 @@
   <title>Harmony's Liquor Box | Harmony, IN</title>
   <meta name="description" content="Harmony's Liquor Box in Harmony, Indiana. Craft beer, fine wine, and premium spirits on US-40.">
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* Prominent Hero Store Status Banner */
+    .hero-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .hero-status-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      display: inline-block;
+      position: relative;
+    }
+
+    /* Open State - Vibrant Green with Pulse */
+    .hero-status-pill.open {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #10b981;
+    }
+    .hero-status-pill.open .hero-status-dot {
+      background-color: #059669;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse-green 2s infinite;
+    }
+
+    /* Closed State - Vibrant Red with Soft Glow */
+    .hero-status-pill.closed {
+      background-color: #ffe4e6;
+      color: #9f1239;
+      border: 1px solid #f43f5e;
+    }
+    .hero-status-pill.closed .hero-status-dot {
+      background-color: #e11d48;
+      box-shadow: 0 0 8px rgba(225, 29, 72, 0.4);
+    }
+
+    /* Loading State */
+    .hero-status-pill.loading {
+      background-color: #f3f4f6;
+      color: #4b5563;
+      border: 1px solid #d1d5db;
+    }
+    .hero-status-pill.loading .hero-status-dot {
+      background-color: #6b7280;
+    }
+
+    .status-detail {
+      font-weight: 500;
+      opacity: 0.85;
+      font-size: 0.95rem;
+    }
+
+    @keyframes pulse-green {
+      0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -37,6 +113,16 @@
 
       <!-- Right Side: Text & Actions -->
       <div class="hero-text-wrapper">
+        
+        <!-- Prominent Live Status Badge -->
+        <div>
+          <div id="store-status-pill" class="hero-status-pill loading">
+            <span class="hero-status-dot"></span>
+            <span id="status-primary">Checking Hours...</span>
+            <span id="status-secondary" class="status-detail"></span>
+          </div>
+        </div>
+
         <h1>Your Local Stop for Spirits, Craft Beer & Wine</h1>
         <p>Conveniently located on US-40 in Harmony, Indiana.</p>
         <div class="hero-actions">
@@ -114,6 +200,57 @@
       <p>&copy; 2026 Harmony's Liquor Box. All rights reserved. Please drink responsibly. Must be 21+.</p>
     </div>
   </footer>
+
+  <!-- Store Status Script -->
+  <script>
+    const STORE_SCHEDULE = {
+      0: { open: 12, close: 20, closeLabel: "8:00 PM", openLabel: "12:00 PM" }, // Sunday
+      1: { open: 9,  close: 21, closeLabel: "9:00 PM", openLabel: "9:00 AM" },  // Monday
+      2: { open: 9,  close: 21, closeLabel: "9:00 PM", openLabel: "9:00 AM" },  // Tuesday
+      3: { open: 9,  close: 21, closeLabel: "9:00 PM", openLabel: "9:00 AM" },  // Wednesday
+      4: { open: 9,  close: 24, closeLabel: "Midnight", openLabel: "9:00 AM" }, // Thursday
+      5: { open: 9,  close: 24, closeLabel: "Midnight", openLabel: "9:00 AM" }, // Friday
+      6: { open: 9,  close: 24, closeLabel: "Midnight", openLabel: "9:00 AM" }  // Saturday
+    };
+
+    const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    function updateHeroStoreStatus() {
+      const now = new Date();
+      const currentDay = now.getDay();
+      const currentHour = now.getHours() + (now.getMinutes() / 60);
+
+      const pill = document.getElementById("store-status-pill");
+      const primaryText = document.getElementById("status-primary");
+      const secondaryText = document.getElementById("status-secondary");
+
+      const today = STORE_SCHEDULE[currentDay];
+      const isOpen = currentHour >= today.open && currentHour < today.close;
+
+      pill.classList.remove("open", "closed", "loading");
+
+      if (isOpen) {
+        pill.classList.add("open");
+        primaryText.textContent = "Open Now";
+        secondaryText.textContent = `• Closes at ${today.closeLabel}`;
+      } else {
+        pill.classList.add("closed");
+        primaryText.textContent = "Closed";
+
+        if (currentHour < today.open) {
+          secondaryText.textContent = `• Opens today at ${today.openLabel}`;
+        } else {
+          const nextDayIndex = (currentDay + 1) % 7;
+          const nextDay = STORE_SCHEDULE[nextDayIndex];
+          const nextDayName = (nextDayIndex === (currentDay + 1) % 7) ? DAY_NAMES[nextDayIndex] : "Tomorrow";
+          secondaryText.textContent = `• Opens ${nextDayName} at ${nextDay.openLabel}`;
+        }
+      }
+    }
+
+    updateHeroStoreStatus();
+    setInterval(updateHeroStoreStatus, 60000);
+  </script>
 
 </body>
 </html>

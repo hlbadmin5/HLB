@@ -35,6 +35,7 @@
       </a>
       <nav>
         <a href="../bourbon-room.html" target="_blank">View Live Bourbon Room</a>
+        <button id="logoutBtn" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; margin-left: 1rem; font-weight: bold;">Logout</button>
       </nav>
     </div>
   </header>
@@ -114,6 +115,27 @@
   </main>
 
   <script>
+
+    // Immediately verify if the user has the secure cookie
+async function verifyAccess() {
+    const res = await fetch('/api/check-auth', {
+        method: 'GET',
+        credentials: 'include' // Tells the browser to send the cookie
+    });
+
+    if (!res.ok) {
+        // Kick them to the login page if they aren't authenticated
+        window.location.href = '/admin/login.html';
+    } else {
+        // Unhide the body only after auth is confirmed
+        document.body.style.display = 'block'; 
+    }
+}
+
+// Hide body by default to prevent the page from flashing before kicking them out
+document.body.style.display = 'none';
+verifyAccess();
+
     document.getElementById('addInventoryForm').addEventListener('submit', async function(e) {
       e.preventDefault(); 
       const form = e.target;
@@ -126,7 +148,11 @@
       statusDiv.textContent = '';
 
       try {
-        const response = await fetch('/api/add-bourbon', { method: 'POST', body: formData });
+        const response = await fetch('/api/add-bourbon', { 
+            method: 'POST', 
+            body: formData,
+            credentials: 'include' // Added credentials here
+        });
         if (response.ok) {
           statusDiv.style.color = '#10b981';
           statusDiv.textContent = 'Successfully added!';
@@ -192,6 +218,7 @@
         const response = await fetch('/api/toggle-bourbon', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Added credentials here
           body: JSON.stringify({ id: index })
         });
 
@@ -212,6 +239,7 @@
         const response = await fetch('/api/delete-bourbon', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Added credentials here
           body: JSON.stringify({ id: index })
         });
 
@@ -226,6 +254,17 @@
     }
 
     loadAdminInventory();
+
+    // Logout function
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+        // After telling the server to delete the cookie, bounce to login screen
+        window.location.href = '/admin/login.html';
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    });
   </script>
 </body>
 </html>

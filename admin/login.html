@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Login | Harmony's Liquor Box</title>
+  
+  <style>
+    /* Speakeasy theme overrides for a centered login dialog */
+    body {
+      background-color: #0a0806; /* Deep dark background */
+      color: #e6dfd5;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-card {
+      background-color: #1a1511;
+      border: 1px solid #4a3828;
+      border-radius: 8px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+      text-align: center;
+    }
+
+    .login-header {
+      margin-bottom: 2rem;
+    }
+
+    .badge-admin {
+      background-color: #78350f;
+      color: #fde68a;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .login-title {
+      color: #fbbf24;
+      font-size: 1.5rem;
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .admin-form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-form-group label {
+      color: #fbbf24;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .admin-input {
+      background-color: #14110e;
+      border: 1px solid #4a3828;
+      color: #e6dfd5;
+      padding: 0.85rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      width: 100%;
+      box-sizing: border-box; /* Ensures padding doesn't break width */
+    }
+
+    .admin-input:focus {
+      outline: none;
+      border-color: #d97706;
+    }
+
+    .btn-primary {
+      background-color: #d97706;
+      color: #fff;
+      border: none;
+      padding: 1rem;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: #b45309;
+    }
+
+    .error-message {
+      color: #ef4444;
+      margin-top: 1rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="login-header">
+      <div class="badge-admin">Authorized Personnel</div>
+      <h2 class="login-title">Harmony's Vault Access</h2>
+    </div>
+    
+    <form id="loginForm">
+      <div class="admin-form-group">
+        <label for="password">Staff Passcode</label>
+        <input type="password" id="password" class="admin-input" placeholder="Enter staff passcode" required>
+      </div>
+      
+      <button type="submit" class="btn-primary">Unlock Dashboard</button>
+      <div id="errorMessage" class="error-message">Invalid passcode. Try again.</div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errorDiv = document.getElementById('errorMessage');
+      const submitBtn = e.target.querySelector('button');
+      
+      // Reset state on new submission
+      errorDiv.style.display = 'none';
+      submitBtn.textContent = 'Verifying...';
+      submitBtn.disabled = true;
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            password: document.getElementById('password').value
+          })
+        });
+
+        if (res.ok) {
+          // Success! Bounce to the dashboard
+          window.location.href = '/admin/index.html';
+        } else {
+          // Unhide the error message and clear the input
+          errorDiv.style.display = 'block';
+          document.getElementById('password').value = '';
+          document.getElementById('password').focus();
+        }
+      } catch (error) {
+        // If Flask is down or completely unreachable
+        errorDiv.textContent = 'Connection error. Is the server running?';
+        errorDiv.style.display = 'block';
+      } finally {
+        submitBtn.textContent = 'Unlock Dashboard';
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

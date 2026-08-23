@@ -9,7 +9,7 @@
   <style>
     .admin-form-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; }
     .admin-form-group label { color: #fbbf24; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem; }
-    .admin-input { background-color: #14110e; border: 1px solid #4a3828; color: #e6dfd5; padding: 0.75rem; border-radius: 6px; font-size: 1rem; transition: border-color 0.2s; }
+    .admin-input { background-color: #14110e; border: 1px solid #4a3828; color: #e6dfd5; padding: 0.75rem; border-radius: 6px; font-size: 1rem; transition: border-color 0.2s; width: 100%; }
     .admin-input:focus { outline: none; border-color: #d97706; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     
@@ -17,10 +17,9 @@
     .status-active { background-color: #065f46; color: #34d399; border: 1px solid #047857; }
     .status-inactive { background-color: #7f1d1d; color: #fca5a5; border: 1px solid #b91c1c; }
 
-    /* New Responsive Grid Styles for the Admin List */
     .admin-inventory-grid { 
         display: grid; 
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
         gap: 1.5rem; 
     }
     
@@ -41,6 +40,14 @@
         border-color: #d97706; 
     }
 
+    .form-section-title {
+        color: #fbbf24;
+        font-size: 1.4rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #4a3828;
+        padding-bottom: 0.5rem;
+    }
+
     @media (max-width: 600px) { 
         .form-grid { grid-template-columns: 1fr; } 
     }
@@ -51,7 +58,7 @@
   <header class="navbar">
     <div class="container nav-content">
       <a href="../index.html" class="logo-link">
-        <span class="logo-text">HARMONY'S LIQUOR BOX <span>ADMIN</span></span>
+        <span class="logo-text">HARMONY'S LIQUOR BOX<span>ADMIN</span></span>
       </a>
       <nav>
         <a href="../bourbon-room.html" target="_blank">View Live Bourbon Room</a>
@@ -61,98 +68,152 @@
   </header>
 
   <main class="section">
-    <!-- Removed content-container to allow the grid to stretch -->
     <div class="container">
       
       <div class="page-header bourbon-theme" style="padding: 2rem 1rem; margin-bottom: 2rem; border-radius: 8px;">
         <span class="badge-amber">Staff Only</span>
-        <h2>Add New Bourbon or Cigar</h2>
+        <h2>Add New Inventory</h2>
       </div>
 
-      <!-- Max-width keeps the form from stretching too wide on 1400px screens -->
-      <div class="card showcase-row" style="max-width: 900px; margin: 0 auto;">
-        <form id="addInventoryForm">
-          <div class="form-grid">
-            <div class="admin-form-group">
-              <label for="name">Bottle Name</label>
-              <input type="text" id="name" name="name" class="admin-input" required>
+      <!-- Side-by-Side Form Grid Container -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2.5rem; margin-bottom: 4rem;">
+        
+        <!-- BOURBON FORM -->
+        <div class="card showcase-row" style="margin: 0;">
+          <h3 class="form-section-title">Add Bourbon</h3>
+          <form id="addInventoryForm">
+            <div class="form-grid">
+              <div class="admin-form-group">
+                <label for="name">Bottle Name</label>
+                <input type="text" id="name" name="name" class="admin-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="type">Spirit Type</label>
+                <input type="text" id="type" name="type" class="admin-input" required>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="admin-form-group">
+                <label for="proof">Proof / ABV</label>
+                <input type="text" id="proof" name="proof" class="admin-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="tags">Flavor Tags (Comma separated)</label>
+                <input type="text" id="tags" name="tags" class="admin-input" required>
+              </div>
             </div>
             <div class="admin-form-group">
-              <label for="type">Spirit Type</label>
-              <input type="text" id="type" name="type" class="admin-input" required>
-            </div>
-          </div>
-          <div class="form-grid">
-            <div class="admin-form-group">
-              <label for="proof">Proof / ABV</label>
-              <input type="text" id="proof" name="proof" class="admin-input" required>
+              <label for="nose">Tasting Notes: Nose</label>
+              <input type="text" id="nose" name="nose" class="admin-input" required>
             </div>
             <div class="admin-form-group">
-              <label for="tags">Flavor Tags (Comma separated)</label>
-              <input type="text" id="tags" name="tags" class="admin-input" required>
-            </div>
-          </div>
-          <div class="admin-form-group">
-            <label for="nose">Tasting Notes: Nose</label>
-            <input type="text" id="nose" name="nose" class="admin-input" required>
-          </div>
-          <div class="admin-form-group">
-            <label for="palate">Tasting Notes: Palate</label>
-            <input type="text" id="palate" name="palate" class="admin-input" required>
-          </div>
-          <div class="admin-form-group">
-            <label for="finish">Tasting Notes: Finish</label>
-            <input type="text" id="finish" name="finish" class="admin-input" required>
-          </div>
-          <div class="form-grid">
-            <div class="admin-form-group">
-              <label for="pairingCigar">Recommended Cigar Pairing</label>
-              <input type="text" id="pairingCigar" name="pairingCigar" class="admin-input">
+              <label for="palate">Tasting Notes: Palate</label>
+              <input type="text" id="palate" name="palate" class="admin-input" required>
             </div>
             <div class="admin-form-group">
-              <label for="bottleImage">Upload Bottle Image</label>
-              <input type="file" id="bottleImage" name="bottleImage" class="admin-input" accept="image/png, image/jpeg, image/webp" required style="padding: 0.5rem;">
+              <label for="finish">Tasting Notes: Finish</label>
+              <input type="text" id="finish" name="finish" class="admin-input" required>
             </div>
-          </div>
-          <div class="admin-form-group">
-            <label for="pairingNote">Cigar Pairing Note</label>
-            <textarea id="pairingNote" name="pairingNote" class="admin-input" rows="3"></textarea>
-          </div>
-          <div id="statusMessage" style="margin-bottom: 1rem; font-weight: bold;"></div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem;">Save to Bourbon Room</button>
-        </form>
+            <div class="form-grid">
+              <div class="admin-form-group">
+                <label for="pairingCigar">Recommended Cigar Pairing</label>
+                <input type="text" id="pairingCigar" name="pairingCigar" class="admin-input">
+              </div>
+              <div class="admin-form-group">
+                <label for="bottleImage">Upload Bottle Image</label>
+                <input type="file" id="bottleImage" name="bottleImage" class="admin-input" accept="image/png, image/jpeg, image/webp" required style="padding: 0.5rem;">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label for="pairingNote">Cigar Pairing Note</label>
+              <textarea id="pairingNote" name="pairingNote" class="admin-input" rows="2"></textarea>
+            </div>
+            <div id="statusMessage" style="margin-bottom: 1rem; font-weight: bold;"></div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem;">Save Bourbon</button>
+          </form>
+        </div>
+
+        <!-- CIGAR FORM -->
+        <div class="card showcase-row" style="margin: 0;">
+          <h3 class="form-section-title">Add Cigar</h3>
+          <form id="addCigarForm">
+            <div class="form-grid">
+              <div class="admin-form-group">
+                <label for="cigar-name">Cigar Name & Brand</label>
+                <input type="text" id="cigar-name" name="cigar-name" class="admin-input" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="cigar-wrapper">Wrapper Type</label>
+                <input type="text" id="cigar-wrapper" name="cigar-wrapper" class="admin-input" placeholder="e.g. Maduro, Cameroon" required>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="admin-form-group">
+                <label for="cigar-strength">Strength / Body</label>
+                <input type="text" id="cigar-strength" name="cigar-strength" class="admin-input" placeholder="e.g. Medium-Full" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="cigar-pairingBourbon">Recommended Pour Pairing</label>
+                <input type="text" id="cigar-pairingBourbon" name="cigar-pairingBourbon" class="admin-input">
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label for="cigar-notes">Tasting / Flavor Notes</label>
+              <textarea id="cigar-notes" name="cigar-notes" class="admin-input" rows="2" required></textarea>
+            </div>
+            <div class="admin-form-group">
+              <label for="cigarImage">Upload Cigar Image</label>
+              <input type="file" id="cigarImage" name="cigarImage" class="admin-input" accept="image/png, image/jpeg, image/webp" required style="padding: 0.5rem;">
+            </div>
+            <div id="cigarStatusMessage" style="margin-bottom: 1rem; font-weight: bold;"></div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem; margin-top: auto;">Save Cigar</button>
+          </form>
+        </div>
       </div>
 
-      <div class="page-header bourbon-theme" style="padding: 1.5rem 1rem; margin-top: 3rem; margin-bottom: 1.5rem; border-radius: 8px;">
+      <div class="page-header bourbon-theme" style="padding: 1.5rem 1rem; margin-bottom: 2rem; border-radius: 8px;">
         <h2>Manage Current Inventory</h2>
       </div>
 
-      <!-- Changed from a card wrapper into a full responsive grid wrapper -->
-      <div id="inventory-list" class="admin-inventory-grid">
-        <!-- Dynamically populated via JavaScript -->
+      <!-- Side-by-Side Inventory Lists -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2.5rem;">
+        
+        <!-- BOURBON INVENTORY -->
+        <div>
+          <h3 class="form-section-title">Bourbons</h3>
+          <div id="inventory-list" class="admin-inventory-grid">
+            <!-- Dynamically populated via JavaScript -->
+          </div>
+        </div>
+
+        <!-- CIGAR INVENTORY -->
+        <div>
+          <h3 class="form-section-title">Cigars</h3>
+          <div id="cigar-inventory-list" class="admin-inventory-grid">
+            <!-- Dynamically populated via JavaScript -->
+          </div>
+        </div>
+
       </div>
 
     </div>
   </main>
 
   <script>
-    // Immediately verify if the user has the secure cookie
-async function verifyAccess() {
-    const res = await fetch('/api/check-auth', {
-        method: 'GET',
-        credentials: 'include' 
-    });
-
-    if (!res.ok) {
-        window.location.href = '/admin/login.html';
-    } else {
-        document.body.style.display = 'block'; 
+    // --- Auth Check ---
+    async function verifyAccess() {
+        const res = await fetch('/api/check-auth', { method: 'GET', credentials: 'include' });
+        if (!res.ok) window.location.href = '/admin/login.html';
+        else document.body.style.display = 'block'; 
     }
-}
+    document.body.style.display = 'none';
+    verifyAccess();
 
-document.body.style.display = 'none';
-verifyAccess();
+    function safeName(name) {
+      return name.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    }
 
+    // --- Bourbon Logic ---
     document.getElementById('addInventoryForm').addEventListener('submit', async function(e) {
       e.preventDefault(); 
       const form = e.target;
@@ -165,31 +226,21 @@ verifyAccess();
       statusDiv.textContent = '';
 
       try {
-        const response = await fetch('/api/add-bourbon', { 
-            method: 'POST', 
-            body: formData,
-            credentials: 'include' 
-        });
+        const response = await fetch('/api/add-bourbon', { method: 'POST', body: formData, credentials: 'include' });
         if (response.ok) {
           statusDiv.style.color = '#10b981';
           statusDiv.textContent = 'Successfully added!';
           form.reset();
           loadAdminInventory(); 
-        } else {
-          throw new Error('Failed to save to database.');
-        }
+        } else { throw new Error('Failed to save to database.'); }
       } catch (error) {
         statusDiv.style.color = '#ef4444';
         statusDiv.textContent = 'Error connecting to the server.';
       } finally {
-        submitBtn.textContent = 'Save to Bourbon Room';
+        submitBtn.textContent = 'Save Bourbon';
         submitBtn.disabled = false;
       }
     });
-
-    function safeName(name) {
-      return name.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
-    }
 
     async function loadAdminInventory() {
       const container = document.getElementById('inventory-list');
@@ -198,15 +249,13 @@ verifyAccess();
         const bottles = await response.json();
         
         if(bottles.length === 0) {
-          container.innerHTML = '<p style="padding: 1.5rem; text-align: center; color: #a89f91; grid-column: 1 / -1;">No bottles in inventory.</p>';
+          container.innerHTML = '<p style="padding: 1.5rem; color: #a89f91; grid-column: 1 / -1;">No bottles in inventory.</p>';
           return;
         }
 
-        // Outputting as individual cards designed for the new grid layout
         container.innerHTML = bottles.map((bottle, index) => {
           const isActive = bottle.active !== false;
           const statusClass = isActive ? 'status-active' : 'status-inactive';
-          const statusText = isActive ? 'Active' : 'Inactive';
           const toggleBtnText = isActive ? 'Hide Card' : 'Show Card';
 
           return `
@@ -214,7 +263,7 @@ verifyAccess();
             <div style="margin-bottom: 1.5rem;">
               <strong style="color: #fbbf24; font-size: 1.25rem; display: block; margin-bottom: 0.25rem;">${bottle.name}</strong>
               <span style="color: #a89f91; font-size: 0.95rem; display: block; margin-bottom: 0.75rem;">${bottle.type}</span>
-              <span class="status-badge ${statusClass}" style="margin-left: 0;">${statusText}</span>
+              <span class="status-badge ${statusClass}" style="margin-left: 0;">${isActive ? 'Active' : 'Inactive'}</span>
             </div>
             <div style="display: flex; gap: 0.75rem; width: 100%;">
               <button onclick="toggleBottle(${index})" class="btn btn-secondary" style="flex: 1; padding: 0.6rem;">${toggleBtnText}</button>
@@ -231,44 +280,110 @@ verifyAccess();
     async function toggleBottle(index) {
       try {
         const response = await fetch('/api/toggle-bourbon', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', 
-          body: JSON.stringify({ id: index })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id: index })
         });
-
-        if (response.ok) {
-          loadAdminInventory(); 
-        } else {
-          alert('Failed to update status.');
-        }
-      } catch (error) {
-        alert('Error communicating with the server.');
-      }
+        if (response.ok) loadAdminInventory(); else alert('Failed to update status.');
+      } catch (error) { alert('Error communicating with the server.'); }
     }
 
     async function deleteBottle(index, safeNameForAlert) {
       if (!confirm(`Are you absolutely sure you want to permanently delete ${safeNameForAlert}?`)) return;
-
       try {
         const response = await fetch('/api/delete-bourbon', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', 
-          body: JSON.stringify({ id: index })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id: index })
         });
+        if (response.ok) loadAdminInventory(); else alert('Failed to delete the bottle.');
+      } catch (error) { alert('Error communicating with the server.'); }
+    }
 
+
+    // --- Cigar Logic ---
+    document.getElementById('addCigarForm').addEventListener('submit', async function(e) {
+      e.preventDefault(); 
+      const form = e.target;
+      const statusDiv = document.getElementById('cigarStatusMessage');
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const formData = new FormData(form);
+
+      submitBtn.textContent = 'Saving...';
+      submitBtn.disabled = true;
+      statusDiv.textContent = '';
+
+      try {
+        const response = await fetch('/api/add-cigar', { method: 'POST', body: formData, credentials: 'include' });
         if (response.ok) {
-          loadAdminInventory(); 
-        } else {
-          alert('Failed to delete the bottle from the database.');
-        }
+          statusDiv.style.color = '#10b981';
+          statusDiv.textContent = 'Successfully added!';
+          form.reset();
+          loadAdminCigars(); 
+        } else { throw new Error('Failed to save to database.'); }
       } catch (error) {
-        alert('Error communicating with the server.');
+        statusDiv.style.color = '#ef4444';
+        statusDiv.textContent = 'Error connecting to the server.';
+      } finally {
+        submitBtn.textContent = 'Save Cigar';
+        submitBtn.disabled = false;
+      }
+    });
+
+    async function loadAdminCigars() {
+      const container = document.getElementById('cigar-inventory-list');
+      try {
+        const response = await fetch('../cigars.json?v=' + new Date().getTime());
+        const cigars = await response.json();
+        
+        if(cigars.length === 0) {
+          container.innerHTML = '<p style="padding: 1.5rem; color: #a89f91; grid-column: 1 / -1;">No cigars in inventory.</p>';
+          return;
+        }
+
+        container.innerHTML = cigars.map((cigar, index) => {
+          const isActive = cigar.active !== false;
+          const statusClass = isActive ? 'status-active' : 'status-inactive';
+          const toggleBtnText = isActive ? 'Hide Card' : 'Show Card';
+
+          return `
+          <div class="inventory-list-item">
+            <div style="margin-bottom: 1.5rem;">
+              <strong style="color: #fbbf24; font-size: 1.25rem; display: block; margin-bottom: 0.25rem;">${cigar.name}</strong>
+              <span style="color: #a89f91; font-size: 0.95rem; display: block; margin-bottom: 0.75rem;">${cigar.wrapper} • ${cigar.strength}</span>
+              <span class="status-badge ${statusClass}" style="margin-left: 0;">${isActive ? 'Active' : 'Inactive'}</span>
+            </div>
+            <div style="display: flex; gap: 0.75rem; width: 100%;">
+              <button onclick="toggleCigar(${index})" class="btn btn-secondary" style="flex: 1; padding: 0.6rem;">${toggleBtnText}</button>
+              <button onclick="deleteCigar(${index}, '${safeName(cigar.name)}')" class="btn btn-secondary" style="flex: 1; color: #ef4444; border-color: #ef4444; padding: 0.6rem;">Delete</button>
+            </div>
+          </div>
+          `;
+        }).join('');
+      } catch (error) {
+        // Will fail silently if cigars.json is completely missing, allowing UI to stay clean
+        container.innerHTML = '<p style="padding: 1.5rem; color: #ef4444; grid-column: 1 / -1;">Failed to load cigar inventory.</p>';
       }
     }
 
+    async function toggleCigar(index) {
+      try {
+        const response = await fetch('/api/toggle-cigar', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id: index })
+        });
+        if (response.ok) loadAdminCigars(); else alert('Failed to update status.');
+      } catch (error) { alert('Error communicating with the server.'); }
+    }
+
+    async function deleteCigar(index, safeNameForAlert) {
+      if (!confirm(`Are you absolutely sure you want to permanently delete ${safeNameForAlert}?`)) return;
+      try {
+        const response = await fetch('/api/delete-cigar', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id: index })
+        });
+        if (response.ok) loadAdminCigars(); else alert('Failed to delete the cigar.');
+      } catch (error) { alert('Error communicating with the server.'); }
+    }
+
+    // --- Initialization & Logout ---
     loadAdminInventory();
+    loadAdminCigars(); // Fetch the newly created cigars data
 
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       try {

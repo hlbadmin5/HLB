@@ -34,7 +34,6 @@
   </section>
 
   <main class="section">
-    <!-- Removed content-container to allow the grid to stretch the full 1400px width -->
     <div class="container"> 
       
       <div class="grid details-grid showcase-row">
@@ -70,8 +69,9 @@
         </div>
       </div>
 
+      <!-- Bourbon Display Section -->
       <div class="mt-3">
-        <h2 class="tasting-section-title">Featured Pours & Cigar Pairings</h2>
+        <h2 class="tasting-section-title">Featured Pours</h2>
         <p style="color: #a89f91; font-size: 0.95rem;">Staff tasting profiles and recommended cigar pairings from our humidor.</p>
         
         <div id="tasting-card-grid" class="tasting-grid">
@@ -79,7 +79,17 @@
         </div>
       </div>
 
-      <div class="card highlight-box mt-3">
+      <!-- New Cigar Display Section -->
+      <div class="mt-3" style="margin-top: 4rem;">
+        <h2 class="tasting-section-title">Premium Hand-Rolled Cigars</h2>
+        <p style="color: #a89f91; font-size: 0.95rem;">Fresh arrivals and staff favorites, complete with recommended pour pairings.</p>
+        
+        <div id="cigar-card-grid" class="tasting-grid">
+          <!-- Dynamically loaded from cigars.json -->
+        </div>
+      </div>
+
+      <div class="card highlight-box mt-3" style="margin-top: 4rem;">
         <div class="highlight-content">
           <h3>How to Catch Rare Drops & Allocations</h3>
           <p>Because allocated bottles are limited and move fast, we announce new drop arrivals and special stock updates directly on our Facebook page.</p>
@@ -97,6 +107,7 @@
   </footer>
 
   <script>
+    // --- Load Bourbons ---
     async function loadBourbonData() {
       const container = document.getElementById("tasting-card-grid");
       if (!container) return;
@@ -106,8 +117,6 @@
         if (!response.ok) throw new Error("Could not load bourbons.json");
         
         const allBottles = await response.json();
-        
-        // Filter out any bottle that has been marked as inactive by the Admin
         const activeBottles = allBottles.filter(bottle => bottle.active !== false);
 
         if (activeBottles.length === 0) {
@@ -117,13 +126,11 @@
 
         container.innerHTML = activeBottles.map(bottle => `
           <div class="tasting-card">
-            
             ${bottle.image ? `
             <div style="text-align: center; margin-bottom: 1rem;">
               <img src="${bottle.image}" alt="${bottle.name}" style="max-height: 220px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));">
             </div>
             ` : ''}
-
             <div>
               <div class="tasting-card-header">
                 <div>
@@ -132,23 +139,22 @@
                 </div>
                 <span class="proof-badge">${bottle.proof}</span>
               </div>
-
               <div class="flavor-pills">
                 ${bottle.tags.map(tag => `<span class="flavor-pill">${tag}</span>`).join('')}
               </div>
-
               <div class="notes-block">
                 <p><span class="notes-label">Nose:</span> ${bottle.nose}</p>
                 <p><span class="notes-label">Palate:</span> ${bottle.palate}</p>
                 <p><span class="notes-label">Finish:</span> ${bottle.finish}</p>
               </div>
             </div>
-
+            ${bottle.pairingCigar ? `
             <div class="cigar-pairing-box">
               <div class="cigar-pairing-title">🍂 Recommended Cigar Pairing</div>
               <strong style="color: #fde68a;">${bottle.pairingCigar}</strong>
               <p style="margin: 4px 0 0 0; color: #d1c7b7; font-size: 0.8rem; line-height: 1.4;">${bottle.pairingNote}</p>
             </div>
+            ` : ''}
           </div>
         `).join('');
       } catch (err) {
@@ -157,7 +163,61 @@
       }
     }
 
+    // --- Load Cigars ---
+    async function loadCigarData() {
+      const container = document.getElementById("cigar-card-grid");
+      if (!container) return;
+
+      try {
+        const response = await fetch("cigars.json?v=" + new Date().getTime());
+        if (!response.ok) throw new Error("Could not load cigars.json");
+        
+        const allCigars = await response.json();
+        const activeCigars = allCigars.filter(cigar => cigar.active !== false);
+
+        if (activeCigars.length === 0) {
+            container.innerHTML = `<p style="color: #a89f91; padding: 1rem 0;">No cigars currently featured. Check back soon.</p>`;
+            return;
+        }
+
+        container.innerHTML = activeCigars.map(cigar => `
+          <div class="tasting-card">
+            ${cigar.image ? `
+            <div style="text-align: center; margin-bottom: 1rem;">
+              <img src="${cigar.image}" alt="${cigar.name}" style="max-height: 220px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));">
+            </div>
+            ` : ''}
+            <div>
+              <div class="tasting-card-header">
+                <div>
+                  <h3>${cigar.name}</h3>
+                  <span style="color: #a89f91; font-size: 0.8rem;">Wrapper: ${cigar.wrapper}</span>
+                </div>
+                <span class="proof-badge">${cigar.strength}</span>
+              </div>
+              
+              <div class="notes-block" style="border-left-color: #78350f;">
+                <p><span class="notes-label">Profile:</span> ${cigar.notes}</p>
+              </div>
+            </div>
+            
+            ${cigar.pairingBourbon ? `
+            <div class="cigar-pairing-box">
+              <div class="cigar-pairing-title">🥃 Recommended Pour</div>
+              <strong style="color: #fde68a;">${cigar.pairingBourbon}</strong>
+            </div>
+            ` : ''}
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `<p style="color: #ef4444;">Unable to load cigar selection right now.</p>`;
+      }
+    }
+
+    // Initialize both feeds
     loadBourbonData();
+    loadCigarData();
   </script>
 
 </body>

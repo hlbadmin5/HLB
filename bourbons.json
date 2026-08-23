@@ -3,33 +3,70 @@
     "name": "Buffalo Trace",
     "type": "Kentucky Straight Bourbon",
     "proof": "90 Proof (45% ABV)",
-    "tags": ["Caramel", "Vanilla", "Toffee", "Oak"],
+    "tags": [
+      "Caramel",
+      "Vanilla",
+      "Toffee",
+      "Oak"
+    ],
     "nose": "Sweet vanilla, toasted caramel, and ripe dark fruit.",
     "palate": "Rich toffee, sweet oak spice, candied fruit, and mint.",
     "finish": "Long and smooth with lingering anise and warm oak.",
     "pairingCigar": "Arturo Fuente Hemingway Short Story (Cameroon)",
-    "pairingNote": "The natural sweetness of the Cameroon wrapper harmonizes with the brown sugar and vanilla notes in Buffalo Trace."
+    "pairingNote": "The natural sweetness of the Cameroon wrapper harmonizes with the brown sugar and vanilla notes in Buffalo Trace.",
+    "active": true
   },
   {
     "name": "Eagle Rare 10 Year",
     "type": "Kentucky Straight Bourbon",
     "proof": "90 Proof (45% ABV)",
-    "tags": ["Toasted Oak", "Leather", "Cocoa", "Orange Peel"],
+    "tags": [
+      "Toasted Oak",
+      "Leather",
+      "Cocoa",
+      "Orange Peel"
+    ],
     "nose": "Complex aromas of toffee, candied almond, and rich oak.",
     "palate": "Dry cocoa, candied citrus peel, honey, and subtle leather.",
     "finish": "Prolonged and dry with toasted oak and gentle rye spice.",
     "pairingCigar": "Padron 1964 Anniversary Series (Maduro)",
-    "pairingNote": "Bold chocolate and earthy cocoa notes match the deep barrel age of the 10-year oak profile."
+    "pairingNote": "Bold chocolate and earthy cocoa notes match the deep barrel age of the 10-year oak profile.",
+    "active": true
   },
   {
     "name": "Blanton's Single Barrel",
     "type": "Single Barrel Bourbon",
     "proof": "93 Proof (46.5% ABV)",
-    "tags": ["Citrus", "Nutmeg", "Caramel", "Cinnamon"],
+    "tags": [
+      "Citrus",
+      "Nutmeg",
+      "Caramel",
+      "Cinnamon"
+    ],
     "nose": "Nutmeg, warming baking spices, vanilla, and sweet citrus.",
     "palate": "Creamy vanilla, caramel, and clove over balanced rye warmth.",
     "finish": "Clean and crisp with honey and lingering spice.",
     "pairingCigar": "Ashton Classic (Connecticut Shade)",
-    "pairingNote": "A creamy, smooth Connecticut wrapper elevates Blanton's refined citrus and spice without overpowering it."
+    "pairingNote": "A creamy, smooth Connecticut wrapper elevates Blanton's refined citrus and spice without overpowering it.",
+    "active": true
+  },
+  {
+    "name": "Booker's 2024-01 \"Springfield Batch\"",
+    "type": "Uncut, unfiltered Kentucky Straight Bourbon",
+    "proof": "124.5 proof (62.25% ABV)",
+    "tags": [
+      "Vanilla",
+      "Caramel",
+      "Oak",
+      "Nuts",
+      "Brown Sugar"
+    ],
+    "nose": "Robust vanilla and caramel notes with a pleasant aroma of sweet brown sugars; slightly smoky.",
+    "palate": "Deep and complex flavors of vanilla, nuts, and oak, balanced with a pleasant heat.",
+    "finish": "Long, full, and warm; perfect for easygoing sipping.",
+    "pairingCigar": "Alec Bradley Magic Toast",
+    "pairingNote": "This medium-to-full-bodied cigar delivers notes of dark chocolate, espresso, and cedar. Its natural, toasted sweetness beautifully counters the intense 124.5 proof heat of the Booker's, while the bourbon's heavy oak and baking spices draw out the cigar's cocoa finish without either overpowering the other.",
+    "image": "Bookers_Bourbon_Mighty_Fine_Batch__10777.jpg",
+    "active": true
   }
 ]

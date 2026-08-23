@@ -34,7 +34,8 @@
   </section>
 
   <main class="section">
-    <div class="container content-container">
+    <!-- Removed content-container to allow the grid to stretch the full 1400px width -->
+    <div class="container"> 
       
       <div class="grid details-grid showcase-row">
         <div class="showcase-text">
@@ -106,7 +107,7 @@
         
         const allBottles = await response.json();
         
-        // NEW: Filter out any bottle that has been marked as inactive by the Admin
+        // Filter out any bottle that has been marked as inactive by the Admin
         const activeBottles = allBottles.filter(bottle => bottle.active !== false);
 
         if (activeBottles.length === 0) {

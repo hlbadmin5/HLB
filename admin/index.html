@@ -13,16 +13,36 @@
     .admin-input:focus { outline: none; border-color: #d97706; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
     
-    .inventory-list-item { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border-bottom: 1px solid #382e26; }
-    .inventory-list-item:last-child { border-bottom: none; }
-    
     .status-badge { padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; margin-left: 10px; text-transform: uppercase; }
     .status-active { background-color: #065f46; color: #34d399; border: 1px solid #047857; }
     .status-inactive { background-color: #7f1d1d; color: #fca5a5; border: 1px solid #b91c1c; }
 
+    /* New Responsive Grid Styles for the Admin List */
+    .admin-inventory-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+        gap: 1.5rem; 
+    }
+    
+    .inventory-list-item { 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: space-between; 
+        padding: 1.5rem; 
+        background: #1c1815; 
+        border: 1px solid #4a3828; 
+        border-radius: 8px; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3); 
+        transition: transform 0.2s, border-color 0.2s; 
+    }
+    
+    .inventory-list-item:hover { 
+        transform: translateY(-4px); 
+        border-color: #d97706; 
+    }
+
     @media (max-width: 600px) { 
         .form-grid { grid-template-columns: 1fr; } 
-        .inventory-list-item { flex-direction: column; align-items: flex-start; gap: 1rem; }
     }
   </style>
 </head>
@@ -41,14 +61,16 @@
   </header>
 
   <main class="section">
-    <div class="container content-container">
+    <!-- Removed content-container to allow the grid to stretch -->
+    <div class="container">
       
       <div class="page-header bourbon-theme" style="padding: 2rem 1rem; margin-bottom: 2rem; border-radius: 8px;">
         <span class="badge-amber">Staff Only</span>
         <h2>Add New Bourbon or Cigar</h2>
       </div>
 
-      <div class="card showcase-row">
+      <!-- Max-width keeps the form from stretching too wide on 1400px screens -->
+      <div class="card showcase-row" style="max-width: 900px; margin: 0 auto;">
         <form id="addInventoryForm">
           <div class="form-grid">
             <div class="admin-form-group">
@@ -105,34 +127,29 @@
         <h2>Manage Current Inventory</h2>
       </div>
 
-      <div class="card" style="padding: 0;">
-        <div id="inventory-list">
-          <!-- Dynamically populated via JavaScript -->
-        </div>
+      <!-- Changed from a card wrapper into a full responsive grid wrapper -->
+      <div id="inventory-list" class="admin-inventory-grid">
+        <!-- Dynamically populated via JavaScript -->
       </div>
 
     </div>
   </main>
 
   <script>
-
     // Immediately verify if the user has the secure cookie
 async function verifyAccess() {
     const res = await fetch('/api/check-auth', {
         method: 'GET',
-        credentials: 'include' // Tells the browser to send the cookie
+        credentials: 'include' 
     });
 
     if (!res.ok) {
-        // Kick them to the login page if they aren't authenticated
         window.location.href = '/admin/login.html';
     } else {
-        // Unhide the body only after auth is confirmed
         document.body.style.display = 'block'; 
     }
 }
 
-// Hide body by default to prevent the page from flashing before kicking them out
 document.body.style.display = 'none';
 verifyAccess();
 
@@ -151,7 +168,7 @@ verifyAccess();
         const response = await fetch('/api/add-bourbon', { 
             method: 'POST', 
             body: formData,
-            credentials: 'include' // Added credentials here
+            credentials: 'include' 
         });
         if (response.ok) {
           statusDiv.style.color = '#10b981';
@@ -170,7 +187,6 @@ verifyAccess();
       }
     });
 
-    // We still keep safeName ONLY so the delete popup alert doesn't crash on special characters
     function safeName(name) {
       return name.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
     }
@@ -182,11 +198,11 @@ verifyAccess();
         const bottles = await response.json();
         
         if(bottles.length === 0) {
-          container.innerHTML = '<p style="padding: 1.5rem; text-align: center; color: #a89f91;">No bottles in inventory.</p>';
+          container.innerHTML = '<p style="padding: 1.5rem; text-align: center; color: #a89f91; grid-column: 1 / -1;">No bottles in inventory.</p>';
           return;
         }
 
-        // Added 'index' to perfectly track each item's position in the database
+        // Outputting as individual cards designed for the new grid layout
         container.innerHTML = bottles.map((bottle, index) => {
           const isActive = bottle.active !== false;
           const statusClass = isActive ? 'status-active' : 'status-inactive';
@@ -195,30 +211,29 @@ verifyAccess();
 
           return `
           <div class="inventory-list-item">
-            <div>
-              <strong style="color: #fbbf24; font-size: 1.1rem;">${bottle.name}</strong>
-              <span class="status-badge ${statusClass}">${statusText}</span><br>
-              <span style="color: #a89f91; font-size: 0.85rem;">${bottle.type}</span>
+            <div style="margin-bottom: 1.5rem;">
+              <strong style="color: #fbbf24; font-size: 1.25rem; display: block; margin-bottom: 0.25rem;">${bottle.name}</strong>
+              <span style="color: #a89f91; font-size: 0.95rem; display: block; margin-bottom: 0.75rem;">${bottle.type}</span>
+              <span class="status-badge ${statusClass}" style="margin-left: 0;">${statusText}</span>
             </div>
-            <div style="display: flex; gap: 0.5rem;">
-              <button onclick="toggleBottle(${index})" class="btn btn-secondary" style="padding: 0.5rem 1rem;">${toggleBtnText}</button>
-              <button onclick="deleteBottle(${index}, '${safeName(bottle.name)}')" class="btn btn-secondary" style="color: #ef4444; border-color: #ef4444; padding: 0.5rem 1rem;">Delete</button>
+            <div style="display: flex; gap: 0.75rem; width: 100%;">
+              <button onclick="toggleBottle(${index})" class="btn btn-secondary" style="flex: 1; padding: 0.6rem;">${toggleBtnText}</button>
+              <button onclick="deleteBottle(${index}, '${safeName(bottle.name)}')" class="btn btn-secondary" style="flex: 1; color: #ef4444; border-color: #ef4444; padding: 0.6rem;">Delete</button>
             </div>
           </div>
           `;
         }).join('');
       } catch (error) {
-        container.innerHTML = '<p style="padding: 1.5rem; color: #ef4444;">Failed to load inventory.</p>';
+        container.innerHTML = '<p style="padding: 1.5rem; color: #ef4444; grid-column: 1 / -1;">Failed to load inventory.</p>';
       }
     }
 
-    // Now communicating directly via the item's index ID
     async function toggleBottle(index) {
       try {
         const response = await fetch('/api/toggle-bourbon', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', // Added credentials here
+          credentials: 'include', 
           body: JSON.stringify({ id: index })
         });
 
@@ -239,7 +254,7 @@ verifyAccess();
         const response = await fetch('/api/delete-bourbon', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', // Added credentials here
+          credentials: 'include', 
           body: JSON.stringify({ id: index })
         });
 
@@ -255,11 +270,9 @@ verifyAccess();
 
     loadAdminInventory();
 
-    // Logout function
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       try {
         await fetch('/api/logout', { method: 'POST' });
-        // After telling the server to delete the cookie, bounce to login screen
         window.location.href = '/admin/login.html';
       } catch (error) {
         console.error('Logout failed:', error);

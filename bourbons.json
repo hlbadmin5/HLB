@@ -14,7 +14,7 @@
     "finish": "Long and smooth with lingering anise and warm oak.",
     "pairingCigar": "Arturo Fuente Hemingway Short Story (Cameroon)",
     "pairingNote": "The natural sweetness of the Cameroon wrapper harmonizes with the brown sugar and vanilla notes in Buffalo Trace.",
-    "active": false
+    "active": true
   },
   {
     "name": "Eagle Rare 10 Year",
@@ -31,7 +31,7 @@
     "finish": "Prolonged and dry with toasted oak and gentle rye spice.",
     "pairingCigar": "Padron 1964 Anniversary Series (Maduro)",
     "pairingNote": "Bold chocolate and earthy cocoa notes match the deep barrel age of the 10-year oak profile.",
-    "active": false
+    "active": true
   },
   {
     "name": "Blanton's Single Barrel",

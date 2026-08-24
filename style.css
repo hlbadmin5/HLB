@@ -33,7 +33,7 @@ body {
 .navbar {
   background: var(--bg-card);
   border-bottom: 1px solid var(--border);
-  padding: 0.75rem 0;
+  padding: 0.4rem 0;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -54,7 +54,7 @@ body {
 }
 
 .nav-logo {
-  height: 42px;
+  height: 53px;
   width: auto;
   object-fit: contain;
 }
@@ -103,10 +103,10 @@ nav a.active {
 }
 
 .hero-logo {
-  max-width: 380px;
+  max-width: 456px;
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.6));
+  /* filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.6)); */
 }
 
 .hero-text-wrapper {

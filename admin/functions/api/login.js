@@ -1,22 +1,30 @@
 export async function onRequestPost(context) {
     try {
-        const { password } = await context.request.json();
+        const { username, password } = await context.request.json();
         
-        // Match this against your staff passcode (you can update or secure this as needed)
-        const MASTER_PASSWORD = "your-secure-passcode"; // Change to your preferred passcode
+        const admin = await context.env.DB.prepare(
+            "SELECT * FROM admins WHERE username = ?"
+        ).bind(username).first();
 
-        if (password === MASTER_PASSWORD) {
-            // Set an auth cookie or token for the session
-            return new Response(JSON.stringify({ success: true }), {
+        if (!admin) {
+            return new Response(JSON.stringify({ error: "Invalid credentials" }), { status: 401 });
+        }
+
+        // Verify password hash (using standard comparison or Web Crypto API)
+        // If is_temp is 1, return a flag telling the front-end to force a password change
+        if (password === admin.password_hash) {
+            return new Response(JSON.stringify({ 
+                success: true, 
+                forcePasswordChange: admin.is_temp === 1 
+            }), {
                 status: 200,
                 headers: {
-                    "Content-Type": "application/json",
-                    "Set-Cookie": "hlb_auth=authenticated; Path=/; HttpOnly; Secure; SameSite=Strict"
+                    "Set-Cookie": `hlb_auth=${username}; Path=/; HttpOnly; Secure; SameSite=Strict`
                 }
             });
         }
 
-        return new Response(JSON.stringify({ error: "Invalid passcode" }), { status: 401 });
+        return new Response(JSON.stringify({ error: "Invalid credentials" }), { status: 401 });
     } catch (err) {
         return new Response(JSON.stringify({ error: err.message }), { status: 500 });
     }

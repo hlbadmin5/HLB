@@ -53,7 +53,7 @@
     }
   </style>
 </head>
-<body class="bourbon-theme-body">
+<body class="bourbon-theme-body" style="display: none;">
 
   <header class="navbar">
     <div class="container nav-content">
@@ -200,13 +200,21 @@
   </main>
 
   <script>
-    // --- Auth Check ---
+    // --- Strict Auth Check ---
     async function verifyAccess() {
-        const res = await fetch('/api/check-auth', { method: 'GET', credentials: 'include' });
-        if (!res.ok) window.location.href = '/admin/login.html';
-        else document.body.style.display = 'block'; 
+        try {
+            const res = await fetch('/api/check-auth', { method: 'GET', credentials: 'include' });
+            if (!res.ok) {
+                window.location.replace('/admin/login.html');
+            } else {
+                document.body.style.display = 'block'; 
+                loadAdminInventory();
+                loadAdminCigars();
+            }
+        } catch (error) {
+            window.location.replace('/admin/login.html');
+        }
     }
-    document.body.style.display = 'none';
     verifyAccess();
 
     function safeName(name) {
@@ -245,7 +253,7 @@
     async function loadAdminInventory() {
       const container = document.getElementById('inventory-list');
       try {
-        const response = await fetch('../bourbons.json?v=' + new Date().getTime());
+        const response = await fetch('/api/bourbons?v=' + new Date().getTime());
         const bottles = await response.json();
         
         if(bottles.length === 0) {
@@ -253,7 +261,7 @@
           return;
         }
 
-        container.innerHTML = bottles.map((bottle, index) => {
+        container.innerHTML = bottles.map((bottle) => {
           const isActive = bottle.active !== false;
           const statusClass = isActive ? 'status-active' : 'status-inactive';
           const toggleBtnText = isActive ? 'Hide Card' : 'Show Card';
@@ -266,8 +274,8 @@
               <span class="status-badge ${statusClass}" style="margin-left: 0;">${isActive ? 'Active' : 'Inactive'}</span>
             </div>
             <div style="display: flex; gap: 0.75rem; width: 100%;">
-              <button onclick="toggleBottle(${index})" class="btn btn-secondary" style="flex: 1; padding: 0.6rem;">${toggleBtnText}</button>
-              <button onclick="deleteBottle(${index}, '${safeName(bottle.name)}')" class="btn btn-secondary" style="flex: 1; color: #ef4444; border-color: #ef4444; padding: 0.6rem;">Delete</button>
+              <button onclick="toggleBottle(${bottle.id})" class="btn btn-secondary" style="flex: 1; padding: 0.6rem;">${toggleBtnText}</button>
+              <button onclick="deleteBottle(${bottle.id}, '${safeName(bottle.name)}')" class="btn btn-secondary" style="flex: 1; color: #ef4444; border-color: #ef4444; padding: 0.6rem;">Delete</button>
             </div>
           </div>
           `;
@@ -277,25 +285,24 @@
       }
     }
 
-    async function toggleBottle(index) {
+    async function toggleBottle(id) {
       try {
         const response = await fetch('/api/toggle-bourbon', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id: index })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id })
         });
         if (response.ok) loadAdminInventory(); else alert('Failed to update status.');
       } catch (error) { alert('Error communicating with the server.'); }
     }
 
-    async function deleteBottle(index, safeNameForAlert) {
+    async function deleteBottle(id, safeNameForAlert) {
       if (!confirm(`Are you absolutely sure you want to permanently delete ${safeNameForAlert}?`)) return;
       try {
         const response = await fetch('/api/delete-bourbon', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id: index })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id })
         });
         if (response.ok) loadAdminInventory(); else alert('Failed to delete the bottle.');
       } catch (error) { alert('Error communicating with the server.'); }
     }
-
 
     // --- Cigar Logic ---
     document.getElementById('addCigarForm').addEventListener('submit', async function(e) {
@@ -329,7 +336,7 @@
     async function loadAdminCigars() {
       const container = document.getElementById('cigar-inventory-list');
       try {
-        const response = await fetch('../cigars.json?v=' + new Date().getTime());
+        const response = await fetch('/api/cigars?v=' + new Date().getTime());
         const cigars = await response.json();
         
         if(cigars.length === 0) {
@@ -337,7 +344,7 @@
           return;
         }
 
-        container.innerHTML = cigars.map((cigar, index) => {
+        container.innerHTML = cigars.map((cigar) => {
           const isActive = cigar.active !== false;
           const statusClass = isActive ? 'status-active' : 'status-inactive';
           const toggleBtnText = isActive ? 'Hide Card' : 'Show Card';
@@ -350,45 +357,40 @@
               <span class="status-badge ${statusClass}" style="margin-left: 0;">${isActive ? 'Active' : 'Inactive'}</span>
             </div>
             <div style="display: flex; gap: 0.75rem; width: 100%;">
-              <button onclick="toggleCigar(${index})" class="btn btn-secondary" style="flex: 1; padding: 0.6rem;">${toggleBtnText}</button>
-              <button onclick="deleteCigar(${index}, '${safeName(cigar.name)}')" class="btn btn-secondary" style="flex: 1; color: #ef4444; border-color: #ef4444; padding: 0.6rem;">Delete</button>
+              <button onclick="toggleCigar(${cigar.id})" class="btn btn-secondary" style="flex: 1; padding: 0.6rem;">${toggleBtnText}</button>
+              <button onclick="deleteCigar(${cigar.id}, '${safeName(cigar.name)}')" class="btn btn-secondary" style="flex: 1; color: #ef4444; border-color: #ef4444; padding: 0.6rem;">Delete</button>
             </div>
           </div>
           `;
         }).join('');
       } catch (error) {
-        // Will fail silently if cigars.json is completely missing, allowing UI to stay clean
         container.innerHTML = '<p style="padding: 1.5rem; color: #ef4444; grid-column: 1 / -1;">Failed to load cigar inventory.</p>';
       }
     }
 
-    async function toggleCigar(index) {
+    async function toggleCigar(id) {
       try {
         const response = await fetch('/api/toggle-cigar', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id: index })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id })
         });
         if (response.ok) loadAdminCigars(); else alert('Failed to update status.');
       } catch (error) { alert('Error communicating with the server.'); }
     }
 
-    async function deleteCigar(index, safeNameForAlert) {
+    async function deleteCigar(id, safeNameForAlert) {
       if (!confirm(`Are you absolutely sure you want to permanently delete ${safeNameForAlert}?`)) return;
       try {
         const response = await fetch('/api/delete-cigar', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id: index })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ id })
         });
         if (response.ok) loadAdminCigars(); else alert('Failed to delete the cigar.');
       } catch (error) { alert('Error communicating with the server.'); }
     }
 
-    // --- Initialization & Logout ---
-    loadAdminInventory();
-    loadAdminCigars(); // Fetch the newly created cigars data
-
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       try {
         await fetch('/api/logout', { method: 'POST' });
-        window.location.href = '/admin/login.html';
+        window.location.replace('/admin/login.html');
       } catch (error) {
         console.error('Logout failed:', error);
       }

@@ -139,6 +139,8 @@
       e.preventDefault();
       const errorDiv = document.getElementById('errorMessage');
       const submitBtn = e.target.querySelector('button');
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
       
       errorDiv.style.display = 'none';
       submitBtn.textContent = 'Verifying...';
@@ -148,31 +150,33 @@
         const res = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: document.getElementById('username').value,
-            password: document.getElementById('password').value
-          })
+          body: JSON.stringify({ username, password })
         });
 
         const data = await res.json();
 
         if (res.ok) {
           if (data.forcePasswordChange) {
-            // Prompt user to change temporary password immediately
-            const newPass = prompt("This is a temporary code. Please enter your new secure password:");
+            const newPass = prompt("Temporary password detected. Please enter your new secure password:");
             if (newPass) {
-              await fetch('/api/update-password', {
+              const updateRes = await fetch('/api/update-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  username: document.getElementById('username').value,
-                  newPassword: newPass
-                })
+                body: JSON.stringify({ username, newPassword: newPass })
               });
-              alert("Password updated successfully! Redirecting to dashboard...");
+              
+              if (updateRes.ok) {
+                alert("Password updated successfully!");
+              } else {
+                alert("Failed to update password, but logging you in.");
+              }
+            } else {
+              submitBtn.textContent = 'Unlock Dashboard';
+              submitBtn.disabled = false;
+              return;
             }
           }
-          window.location.href = '/admin/index.html';
+          window.location.replace('/admin/index.html');
         } else {
           errorDiv.style.display = 'block';
           document.getElementById('password').value = '';

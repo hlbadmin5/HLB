@@ -6,9 +6,8 @@
   <title>Staff Login | Harmony's Liquor Box</title>
   
   <style>
-    /* Speakeasy theme overrides for a centered login dialog */
     body {
-      background-color: #0a0806; /* Deep dark background */
+      background-color: #0a0806;
       color: #e6dfd5;
       font-family: system-ui, -apple-system, sans-serif;
       display: flex;
@@ -77,7 +76,7 @@
       font-size: 1rem;
       transition: border-color 0.2s;
       width: 100%;
-      box-sizing: border-box; /* Ensures padding doesn't break width */
+      box-sizing: border-box;
     }
 
     .admin-input:focus {
@@ -121,12 +120,17 @@
     
     <form id="loginForm">
       <div class="admin-form-group">
-        <label for="password">Staff Passcode</label>
-        <input type="password" id="password" class="admin-input" placeholder="Enter staff passcode" required>
+        <label for="username">Username</label>
+        <input type="text" id="username" class="admin-input" placeholder="Enter username" required>
+      </div>
+
+      <div class="admin-form-group">
+        <label for="password">Passcode / Temporary Code</label>
+        <input type="password" id="password" class="admin-input" placeholder="Enter password" required>
       </div>
       
       <button type="submit" class="btn-primary">Unlock Dashboard</button>
-      <div id="errorMessage" class="error-message">Invalid passcode. Try again.</div>
+      <div id="errorMessage" class="error-message">Invalid credentials. Try again.</div>
     </form>
   </div>
 
@@ -136,7 +140,6 @@
       const errorDiv = document.getElementById('errorMessage');
       const submitBtn = e.target.querySelector('button');
       
-      // Reset state on new submission
       errorDiv.style.display = 'none';
       submitBtn.textContent = 'Verifying...';
       submitBtn.disabled = true;
@@ -146,22 +149,37 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            username: document.getElementById('username').value,
             password: document.getElementById('password').value
           })
         });
 
+        const data = await res.json();
+
         if (res.ok) {
-          // Success! Bounce to the dashboard
+          if (data.forcePasswordChange) {
+            // Prompt user to change temporary password immediately
+            const newPass = prompt("This is a temporary code. Please enter your new secure password:");
+            if (newPass) {
+              await fetch('/api/update-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  username: document.getElementById('username').value,
+                  newPassword: newPass
+                })
+              });
+              alert("Password updated successfully! Redirecting to dashboard...");
+            }
+          }
           window.location.href = '/admin/index.html';
         } else {
-          // Unhide the error message and clear the input
           errorDiv.style.display = 'block';
           document.getElementById('password').value = '';
           document.getElementById('password').focus();
         }
       } catch (error) {
-        // If Flask is down or completely unreachable
-        errorDiv.textContent = 'Connection error. Is the server running?';
+        errorDiv.textContent = 'Connection error.';
         errorDiv.style.display = 'block';
       } finally {
         submitBtn.textContent = 'Unlock Dashboard';

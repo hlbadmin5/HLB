@@ -75,7 +75,7 @@
         <p style="color: #a89f91; font-size: 0.95rem;">Staff tasting profiles and recommended cigar pairings from our humidor.</p>
         
         <div id="tasting-card-grid" class="tasting-grid">
-          <!-- Dynamically loaded from bourbons.json -->
+          <!-- Dynamically loaded from Cloudflare D1 via API -->
         </div>
       </div>
 
@@ -85,7 +85,7 @@
         <p style="color: #a89f91; font-size: 0.95rem;">Fresh arrivals and staff favorites, complete with recommended pour pairings.</p>
         
         <div id="cigar-card-grid" class="tasting-grid">
-          <!-- Dynamically loaded from cigars.json -->
+          <!-- Dynamically loaded from Cloudflare D1 via API -->
         </div>
       </div>
 
@@ -107,17 +107,17 @@
   </footer>
 
   <script>
-    // --- Load Bourbons ---
+    // --- Load Bourbons from D1 API ---
     async function loadBourbonData() {
       const container = document.getElementById("tasting-card-grid");
       if (!container) return;
 
       try {
-        const response = await fetch("bourbons.json?v=" + new Date().getTime());
-        if (!response.ok) throw new Error("Could not load bourbons.json");
+        const response = await fetch("/api/bourbons?v=" + new Date().getTime());
+        if (!response.ok) throw new Error("Could not load bourbons API");
         
         const allBottles = await response.json();
-        const activeBottles = allBottles.filter(bottle => bottle.active !== false);
+        const activeBottles = allBottles.filter(bottle => bottle.active === true);
 
         if (activeBottles.length === 0) {
             container.innerHTML = `<p style="color: #a89f91; padding: 1rem 0;">No specialty bottles featured today. Check back soon.</p>`;
@@ -140,7 +140,7 @@
                 <span class="proof-badge">${bottle.proof}</span>
               </div>
               <div class="flavor-pills">
-                ${bottle.tags.map(tag => `<span class="flavor-pill">${tag}</span>`).join('')}
+                ${Array.isArray(bottle.tags) ? bottle.tags.map(tag => `<span class="flavor-pill">${tag}</span>`).join('') : ''}
               </div>
               <div class="notes-block">
                 <p><span class="notes-label">Nose:</span> ${bottle.nose}</p>
@@ -163,17 +163,17 @@
       }
     }
 
-    // --- Load Cigars ---
+    // --- Load Cigars from D1 API ---
     async function loadCigarData() {
       const container = document.getElementById("cigar-card-grid");
       if (!container) return;
 
       try {
-        const response = await fetch("cigars.json?v=" + new Date().getTime());
-        if (!response.ok) throw new Error("Could not load cigars.json");
+        const response = await fetch("/api/cigars?v=" + new Date().getTime());
+        if (!response.ok) throw new Error("Could not load cigars API");
         
         const allCigars = await response.json();
-        const activeCigars = allCigars.filter(cigar => cigar.active !== false);
+        const activeCigars = allCigars.filter(cigar => cigar.active === true);
 
         if (activeCigars.length === 0) {
             container.innerHTML = `<p style="color: #a89f91; padding: 1rem 0;">No cigars currently featured. Check back soon.</p>`;
@@ -215,7 +215,6 @@
       }
     }
 
-    // Initialize both feeds
     loadBourbonData();
     loadCigarData();
   </script>
